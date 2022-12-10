@@ -21,8 +21,9 @@ public class CalendarStorage {
 		}		
 	}
 	
-	public static ArrayList<Calendar> getStaffRota(Account acc, int startDate, int endDate){
-		
+	public static ArrayList<Calendar> getStaffRota(Account account, int startDate, int endDate){
+		//check if it is a staff account
+		//check if it is admin/owner OR the staff member themselves
 		
 		return null;
 	}

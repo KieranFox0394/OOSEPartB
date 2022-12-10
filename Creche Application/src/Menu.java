@@ -47,4 +47,9 @@ public class Menu {
 		System.out.println("New Password: " + AccountStorage.currentAccount.getPassword());
 		
 	}
+
+
+	public static void viewOwnRota() {
+				
+	}
 }

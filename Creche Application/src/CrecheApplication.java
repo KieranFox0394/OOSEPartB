@@ -83,7 +83,7 @@ public class CrecheApplication {
 				Menu.resetPassword();
 				break;
 			// Logged in Minder Options
-			case 3:
+			case 21:
 				Menu.viewOwnRota();
 				break;
 
