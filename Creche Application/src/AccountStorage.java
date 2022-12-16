@@ -21,7 +21,8 @@ public class AccountStorage {
 				System.out.println("List Of Users");
 				for(Account acc:AccountStorage.accountData)
 				{
-					System.out.print(acc.getAccountType().toString() + "\t" + 
+					System.out.print(acc.getAccountType().toString() + " " + 
+									StaffStorage.getStaffFromAccount(acc).getEmployeeRole()+ "\t" + 
 										acc.getUserId() + "\t" );
 					if(inclPassword)
 					{

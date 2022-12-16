@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 
 public class Staff {
-	public enum staffRole {MINDER,ADMIN,OWNER};
-	
+	public enum staffRole {
+		MINDER, ADMIN, OWNER
+	};
+
 	private String name;
 	private String dateOfBirth;
 	private int staffId;
@@ -11,126 +13,157 @@ public class Staff {
 	private int contractEndDate;
 	private String employeeRole;
 
-	public boolean adjustAvailability(Calendar calendarToAdjust, boolean newAvailability, Account user) {
-		//We expect in a Calendar instance and will adjust the record as per the 
-		//passed in value. We will simply replace the value in the database.
-		//This could be improved by implementing as a HashMap
-		
-		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
-				
-		if(indexToAdjust == -1) {
-			return false; //no record found
+	public boolean adjustAvailability(Calendar calendarToAdjust, String newAvailability, Account user) {
+		// We expect in a Calendar instance and will adjust the record as per the
+		// passed in value. We will simply replace the value in the database.
+
+		if (!(Staff.validateAvailabilityChange(user, calendarToAdjust))) {
+			return false;
 		}
-		else {
+
+		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
+
+		if (indexToAdjust == -1) {
+			return false; // no record found
+		} else {
 			Calendar newCalendar = new Calendar();
 			newCalendar = CalendarStorage.calendarData.get(indexToAdjust);
 			newCalendar.setAvailability(newAvailability);
 			CalendarStorage.calendarData.set(indexToAdjust, newCalendar);
 			return true;
 		}
-		
+
+	}
+
+	public boolean adjustRostered(Calendar calendarToAdjust, String newRostered, Account user) {
+		// We expect in a Calendar instance and will adjust the record as per the
+		// passed in value. We will simply replace the value in the database.
+
+		if (!(Staff.validateRosteredChange(user, calendarToAdjust))) {
+			return false;
 		}
 
-	public boolean adjustRostered(Calendar calendarToAdjust, boolean newRostered, Account user) {
-		//We expect in a Calendar instance and will adjust the record as per the 
-		//passed in value. We will simply replace the value in the database.
-		//This could be improved by implementing as a HashMap
-				
 		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
-				
-		if(indexToAdjust == -1) {
-			return false; //no record found
-		}
-		else {
+
+		if (indexToAdjust == -1) {
+			return false; // no record found
+		} else {
 			Calendar newCalendar = new Calendar();
 			newCalendar = CalendarStorage.calendarData.get(indexToAdjust);
-			newCalendar.setAvailability(newRostered);
+			newCalendar.setRostered(newRostered);
 			CalendarStorage.calendarData.set(indexToAdjust, newCalendar);
 			return true;
 		}
 	}
 
 	public boolean removeAvailability(Calendar calendarToAdjust, Account user) {
-		//We expect in a Calendar instance and will adjust the record as per the 
-		//passed in value. We will simply replace the value in the database.
-		//This could be improved by implementing as a HashMap
-		
-		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
-				
-		if(indexToAdjust == -1) {
-			return false; //no record found
+		// We expect in a Calendar instance and will adjust the record as per the
+		// passed in value. We will simply replace the value in the database.
+
+		if (!(Staff.validateAvailabilityChange(user, calendarToAdjust))) {
+			return false;
 		}
-		else {
+
+		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
+
+		if (indexToAdjust == -1) {
+			return false; // no record found
+		} else {
 			Calendar newCalendar = new Calendar();
 			newCalendar = CalendarStorage.calendarData.get(indexToAdjust);
-			newCalendar.setAvailability(false);
+			newCalendar.setAvailability(Calendar.availabilityStatus.NOT__SET.name());
 			CalendarStorage.calendarData.set(indexToAdjust, newCalendar);
 			return true;
 		}
 	}
 
 	public boolean removeRostered(Calendar calendarToAdjust, Account user) {
-		//We expect in a Calendar instance and will adjust the record as per the 
-		//passed in value. We will simply replace the value in the database.
-		//This could be improved by implementing as a HashMap
-				
-		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
-				
-		if(indexToAdjust == -1) {
-			return false; //no record found
+		// We expect in a Calendar instance and will adjust the record as per the
+		// passed in value. We will simply replace the value in the database.
+		// This could be improved by implementing as a HashMap
+
+		if (!(Staff.validateRosteredChange(user, calendarToAdjust))) {
+			return false;
 		}
-		else {
+
+		int indexToAdjust = CalendarStorage.calendarData.indexOf(calendarToAdjust);
+
+		if (indexToAdjust == -1) {
+			return false; // no record found
+		} else {
 			Calendar newCalendar = new Calendar();
 			newCalendar = CalendarStorage.calendarData.get(indexToAdjust);
-			newCalendar.setAvailability(false);
+			newCalendar.setAvailability(Calendar.rosteredStatus.NOT__SET.name());
 			CalendarStorage.calendarData.set(indexToAdjust, newCalendar);
 			return true;
 		}
 	}
-	
-	public ArrayList<Calendar> getRota(Staff staffToRetrieve, Account user) {
-		//Allowed by only staff members.  Not parents.
-		//If it is a minder, they can only check their own rota
-		
-		//We need to get back all of the Calendar records for the passed in
-		//Staff
-		
-		if(user.getAccountType() != Account.accountType.STAFF.name()) //only staff are permitted 
+
+	public ArrayList<Calendar> getRota(Account user) {
+		// Allowed by only staff members. Not parents.
+		// If it is a minder, they can only check their own rota
+
+		// We need to get back all of the Calendar records for the passed in
+		// Staff
+
+		if (user.getAccountType() != Account.accountType.STAFF.name()) // only staff are permitted
 		{
 			return null;
 		}
-		
-		if(user.getUserId() == staffToRetrieve.getStaffId() || // the user is looking up their own rota
-		   getStaffFromAccount(user).getEmployeeRole().equals(Staff.staffRole.ADMIN.name()) || //they are an admin
-		   getStaffFromAccount(user).getEmployeeRole().equals( Staff.staffRole.OWNER.name()))  //they are an owner
-			 {
-				ArrayList<Calendar> returnCalendarList = new ArrayList<Calendar>();
-				for(Calendar calendarToCheck : CalendarStorage.calendarData)
-				{
-					if(calendarToCheck.getStaffId() == staffToRetrieve.getStaffId())
-					{
-						returnCalendarList.add(calendarToCheck);
-					}
-				}
-				return returnCalendarList;	
-			 }
-		else {
-			return null;
-		}	
-	}
-	
-	public Staff getStaffFromAccount(Account account)
-	{
-		for(Staff staffToCheck : StaffStorage.staffData)
+
+		if (	StaffStorage.getStaffFromAccount(user).getEmployeeRole().equals(Staff.staffRole.ADMIN.name()) || // they are an admin
+				StaffStorage.getStaffFromAccount(user).getEmployeeRole().equals(Staff.staffRole.OWNER.name())) // they are an owner
 		{
-			if(account.getUserId() == staffToCheck.getStaffId())
-			{
-				return staffToCheck;
+			ArrayList<Calendar> returnCalendarList = new ArrayList<Calendar>();
+			for (Calendar calendarToCheck : CalendarStorage.calendarData) {
+				if (calendarToCheck.getStaffId() == this.getStaffId()) {
+					returnCalendarList.add(calendarToCheck);
+				}
+			}
+			return returnCalendarList;
+		} else {
+			return null;
+		}
+	}
+
+	private static boolean validateAvailabilityChange(Account user, Calendar calendarToAdjust) {
+		if (user.getAccountType() != Account.accountType.STAFF.name()) {
+			return false; // only STAFF can make adjustments
+		}
+
+		Staff staffUser = StaffStorage.getStaffFromAccount(user);
+
+		if (user != null) // user is STAFF
+		{
+			if (staffUser.getEmployeeRole().equals(Staff.staffRole.OWNER.name())
+					|| (staffUser.getEmployeeRole().equals(Staff.staffRole.ADMIN.name()))) {
+				return false; // only STAFF of type MINDER can adjust availability
+			}
+
+			if (staffUser.getStaffId() != calendarToAdjust.getStaffId()) {
+				return false; // only MINDER's can change their OWN availability
 			}
 		}
-		return null;
+
+		return true;
 	}
-	
+
+	private static boolean validateRosteredChange(Account user, Calendar calendarToAdjust) {
+		if (user.getAccountType() != Account.accountType.STAFF.name()) {
+			return false; // only STAFF can make adjustments
+		}
+
+		Staff staffUser = StaffStorage.getStaffFromAccount(user);
+
+		if (user != null) // user is STAFF
+		{
+			if (staffUser.getEmployeeRole().equals(Staff.staffRole.MINDER.name())) {
+				return false; // only STAFF of type OWNER OR ADMIN can adjust rostered
+			}
+		}
+		return true;
+	}
+
 	public boolean adjustPay(Staff staffToAdjust, Staff user) {
 		// TODO - implement Staff.adjustPay
 		throw new UnsupportedOperationException();
@@ -141,12 +174,12 @@ public class Staff {
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean addChildAttendanceRecord(Child childToAdjust,Attendance attendanceRecordToAdjust, Account user) {
+	public boolean addChildAttendanceRecord(Child childToAdjust, Attendance attendanceRecordToAdjust, Account user) {
 		// TODO - implement Staff.addChildAttendanceRecord
 		throw new UnsupportedOperationException();
 	}
 
-	public boolean addChildCollectionRecord(Child childToAdjust,Attendance attendanceRecordToAdjust, Account user ) {
+	public boolean addChildCollectionRecord(Child childToAdjust, Attendance attendanceRecordToAdjust, Account user) {
 		// TODO - implement Staff.addChildCollectionRecord
 		throw new UnsupportedOperationException();
 	}
@@ -161,7 +194,6 @@ public class Staff {
 		throw new UnsupportedOperationException();
 	}
 
-	
 	public boolean createPayment(Staff staffToAdjust, Account user) {
 		// TODO - implement Staff.createPayment
 		throw new UnsupportedOperationException();
@@ -176,7 +208,6 @@ public class Staff {
 		// TODO - implement Staff.getGuardianDetails
 		throw new UnsupportedOperationException();
 	}
-
 
 	public ArrayList<Fees> getPaymentHistory(Parents parentsToRetrieve, Account user) {
 		// TODO - implement Staff.getPaymentHistory

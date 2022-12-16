@@ -44,4 +44,24 @@ public class StaffStorage {
 		}
 		
 	}
+	
+	public static Staff getStaffFromAccount(Account account) {
+		for (Staff staffToCheck : StaffStorage.staffData) {
+			if (account.getUserId() == staffToCheck.getStaffId()) {
+				return staffToCheck;
+			}
+		}
+		return null;
+	}
+
+	public static Staff getStaffFromID(int minderID) {
+		for(Staff staff : StaffStorage.staffData)
+		{
+			if(minderID == staff.getStaffId())
+			{
+				return staff;
+			}
+		}
+		return null;
+	}
 }

@@ -1,11 +1,17 @@
 import java.util.ArrayList;
 
 public class Calendar {
+	public enum rosteredStatus {
+		ROSTERED, NOTROSTERED, NOT__SET
+	};
+	public enum availabilityStatus {
+		AVAILABLE, NOTAVAILABLE, NOT__SET
+	};
 
 	private int staffId;
 	private int date;
-	private boolean availability;
-	private boolean isRostered;
+	private String availability;
+	private String rostered;
 
 	public static ArrayList<Calendar> createCalendarMonth(int month,int staffId) { 
 		ArrayList<Calendar> returnCalendar = new ArrayList<>();
@@ -14,6 +20,8 @@ public class Calendar {
 			Calendar newCalendar = new Calendar();
 			newCalendar.setStaffId(staffId);
 			newCalendar.setDate((month * 30) + day);
+			newCalendar.setAvailability(Calendar.availabilityStatus.NOT__SET.name());
+			newCalendar.setRostered(Calendar.rosteredStatus.NOT__SET.name());
 			returnCalendar.add(newCalendar);
 		}
 		return returnCalendar;
@@ -35,20 +43,20 @@ public class Calendar {
 		this.date = date;
 	}
 
-	public boolean isAvailability() {
+	public String getAvailability() {
 		return availability;
 	}
 
-	public void setAvailability(boolean availability) {
+	public void setAvailability(String availability) {
 		this.availability = availability;
 	}
 
-	public boolean isRostered() {
-		return isRostered;
+	public String getRostered() {
+		return rostered;
 	}
 
-	public void setRostered(boolean isRostered) {
-		this.isRostered = isRostered;
+	public void setRostered(String rostered) {
+		this.rostered = rostered;
 	}
 
 }

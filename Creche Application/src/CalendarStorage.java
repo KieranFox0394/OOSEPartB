@@ -20,12 +20,19 @@ public class CalendarStorage {
 			}
 		}		
 	}
-	
-	public static ArrayList<Calendar> getStaffRota(Account account, int startDate, int endDate){
-		//check if it is a staff account
-		//check if it is admin/owner OR the staff member themselves
-		
+
+
+	public static Calendar getCalendarEntry(Staff staffToFind, int dateToFind) {
+		for(Calendar cal : CalendarStorage.calendarData)
+		{
+			if(cal.getStaffId() == staffToFind.getStaffId() && cal.getDate() == dateToFind)
+			{
+				return cal;
+			}
+		}
 		return null;
 	}
+	
+	
 
 }
