@@ -1,3 +1,4 @@
+package creche.impl;
 public class Account {
 	public enum accountType {STAFF,PARENT};
 	

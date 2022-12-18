@@ -1,3 +1,4 @@
+package creche.impl;
 public class Child {
 	public final String[] childStatus= {"Not Registered","Registered","Waiting","Enrolled","Completed"};
 

@@ -1,3 +1,4 @@
+package creche.impl;
 public class Fees {
 
 	private int childId;

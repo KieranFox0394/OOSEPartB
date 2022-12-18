@@ -1,3 +1,4 @@
+package creche.impl;
 public class DesignatedGuardian {
 
 	private int childId;
